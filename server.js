@@ -2,12 +2,17 @@
 const express=require('express')
 const db=require('./config/database')
 const bodyParser = require('body-parser');
-const port=5000
 const app = express()
 require('dotenv').config()
+const axios= require('axios')
+const cors= require('cors')
+
+
+const port=process.env.SERVER_URL
  
-
-
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }))
+app.use(cors())
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -49,4 +54,4 @@ app.use(function (err, req, res, next) {
     else
         res.status(500).json({ message: "Something looks wrong " +err});
 });
-app.listen(port,console.log(`server is running at localhost:${port}`));
+app.listen(process.env.PORT,console.log(`server is running at localhost:${port}`));

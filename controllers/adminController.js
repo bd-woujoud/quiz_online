@@ -2,9 +2,11 @@
 const adminModel = require('../models/adminModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {  validateadmin,ValidateResetPasswordData } = require('../validation/adminSchema')
+const {  validateadmin} = require('../validation/adminSchema')
 const { SignToken } = require('../helpers/auth')
 const nodemailer=require('nodemailer')
+
+
 module.exports = {
 
     createadmin: async function (req, res) {
@@ -39,7 +41,7 @@ module.exports = {
                 }
             })
 
-         const passwordhash = await bcrypt.hash(req.body.password, 10) // cryptage password lors de la creation
+         const passwordhash = await bcrypt.hash(req.body.password, 10) // cryptage password 
 
          req.body.password = passwordhash
 
@@ -103,7 +105,7 @@ module.exports = {
             })
         } else {
 
-            const token = await SignToken(admin._id) //creation de methode pour creer  access token 
+            const token = await SignToken(admin._id) 
 
             res.cookie("access_token", token, { maxAge: 3600 * 1000, httpOnly: true, sameSite: true });
 
@@ -127,27 +129,28 @@ module.exports = {
 
 
     sendMail: function (req, res) {
-
         var transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
             auth: {
-                user: 'wwwwboudhina@gmail.com',
-                pass: 'zoula1983',
+             
+
+                user : process.env.MAIL,
+                pass : process.env.PASS
             }
         });
-
-        
+        console.log(process.env.PASS);
 
         const test =req.body.test
-
         var mailOptions = {
 
             from: req.body.from,
             to: req.body.to,
             text: 'Click the link below to take the test',
-            html: `<a href='http://localhost:5000/test/getbyid/${test}'>test link</a>`
-
+             html: `<a href='${process.env.SERVER_URL}/test/${test}'>test link</a>`
         };
+       
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
