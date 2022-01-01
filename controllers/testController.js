@@ -1,27 +1,72 @@
 
 const qcmModel = require("../models/qcmModel");
 const testModel = require("../models/testModel");
+const Condidature = require('../models/condidatureModel')
 var readlineSync = require("readline-sync");
 module.exports = {
 
-    createtest: (req, res) => {
+    createtest: async (req, res, next) => {
 
+        console.log(req.body);
 
+        const questions = await qcmModel.find({ categorie: req.body.category })
+        console.log(questions);
+        function getRandomQuestionSet(number) {
+            var qSet = [];
+            while (qSet.length < number) {
+                var randomIndex = Math.floor(Math.random() * questions.length);
+                if (qSet.indexOf(randomIndex) === -1) {
+                    qSet.push(randomIndex)
+                }
+            }
+            return questions.filter(function (d, i) {
+                return qSet.indexOf(i) > -1;
+            })
+        }
 
+        const myquestions = getRandomQuestionSet(5)
 
-        testModel.create(req.body, (err, test) => {
+        let qts = []
+        for (let item of myquestions) {
+            qts.push(item._id)
+        }
+
+        let data = {
+            questions: qts,
+            condidature: req.body.condidature
+        }
+
+        testModel.create(data, (err, test) => {
             if (err) {
                 res.status(500).json({
                     success: false,
                     message: "error create test",
-                    errors: { details: [{ path: ['global'], message: 'something went wrong' }] } 
+                    errors: { details: [{ path: ['global'], message: 'something went wrong' }] }
                 })
             } else {
-                res.status(201).json({
+                let obj = {
+                    test: test._id,
+                    to: req.body.to,
+                    subject: 'test a passer',
+                    text: 'test link'
+                }
+
+
+                /* res.status(201).json({
                     success: true,
                     message: "test successfuly created",
                     data: test
+                }) */
+
+                Condidature.findByIdAndUpdate({ _id: req.body.condidature }, { test: test._id }, { new: true }, (err, con) => {
+                    res.status(200).json({
+                        messge: "condidature",
+                        data: con
+                    })
                 })
+
+                req.mail = obj
+                next()
             }
         })
     },
@@ -49,7 +94,7 @@ module.exports = {
 
 
     gettestById: function (req, res) {
-        testModel.findById({ _id: req.params.id }).populate('questions').populate('condidature',' -_id -cv') .exec((err, data) => {
+        testModel.findById({ _id: req.params.id }).populate('questions').populate('condidature', ' -_id -cv').exec((err, data) => {
             if (err)
                 res.status(500).json
                     ({
@@ -103,33 +148,5 @@ module.exports = {
         })
     },
 
-
-
-
-
-
-test:function(question, isCorrect){
-  var condidatAnswer = readlineSync.question(question);
-  if(condidatAnswer == isCorrect){
-    console.log("correct! ");
-    score++;
-  }
-  else{
-    console.log("wrong! ");
-    score;
-  }
-  console.log("your score is ",score);
-
-
-
-//LOOP
-for(var i=0; i<questions.length; i++){
-  var currentq = questions[i];
-  test(currentq.question, currentq.isCorrect);
-}
-
-//To display the final score.
-console.log("YOUR FINAL SCORE IS: " + score+"/10")
-}
 
 }

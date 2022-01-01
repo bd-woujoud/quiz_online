@@ -5,48 +5,29 @@ const Schema = mongoose.Schema
 const testSchema = new Schema({
 
     score: {
-        
         type: Number,
         require: true,
-        default :0
-        
-
+        default: 0
     },
 
     questions: [{
-
         type: mongoose.Schema.Types.ObjectId,
         ref: 'qcm'
-        
     }],
 
 
-
-    // answers: [{
-
-    //     qcm: {
-
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'qcm'
-    //     },
-
-    //     reponse: {
-
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'reponse'
-    //     },
-
-    //}],
-
-    condidature: [{
-
+    condidature: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'condidature'
-    }],
+    },
 
+    isvalid: {
+        type: Boolean,
+        default: false
+    }
 
 },
 
-    { timestamps: true }) //lazma fel offre welcondidaturewtest
+    { timestamps: true })
 
 module.exports = new mongoose.model('test', testSchema)

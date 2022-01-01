@@ -105,7 +105,8 @@ module.exports = {
             })
         } else {
 
-            const token = await SignToken(admin._id) 
+          
+            const token = await SignToken(admin._id , admin.role) 
 
             res.cookie("access_token", token, { maxAge: 3600 * 1000, httpOnly: true, sameSite: true });
 
@@ -128,26 +129,34 @@ module.exports = {
     },
 
 
+    isAuthenticated: (req, res) => {
+        console.log('hey');
+        const { role } = req.user
+        return res.status(200).json({ isAuthenticated: true, role: role })
+    },
+
     sendMail: function (req, res) {
         var transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
+            service  :"gmail",
             port: 465,
             secure: true,
             auth: {
              
 
-                user : process.env.MAIL,
-                pass : process.env.PASS
+                user : process.env.MAIL,// generated ethereal user
+                pass : process.env.PASS // generated ethereal password
             }
         });
         console.log(process.env.PASS);
 
-        const test =req.body.test
+        const test =req.mail.test
         var mailOptions = {
 
-            from: req.body.from,
-            to: req.body.to,
-            text: 'Click the link below to take the test',
+            from: process.env.MAIL,  // sender address
+            to: req.mail.to,// list of receivers
+            subject: req.mail.subject, // Subject line
+            text: req.mail.text, // plain text body
              html: `<a href='${process.env.SERVER_URL}/test/${test}'>test link</a>`
         };
        

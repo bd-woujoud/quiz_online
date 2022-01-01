@@ -1,24 +1,35 @@
+const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
+const dir = "./upload";
 
-var multer= require("multer");
-const path=require("path")
-const fs=require("fs")
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './upload')  
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname)
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    //fonction pour ajouter des nouveaux files sans l'intégrer manuellement
+    /************************/
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
     }
-  })
+    callback(null, "./upload");
+  },
+  /***************************/
+  filename: function (req, file, callback) {
+    callback(null, Date.now()+'-'+file.originalname);
+  },
+});
 
-
-
-
-var upload = multer({ storage: storage })
-module.exports=upload
-
-
-
-
-
-
+const fileFilter = (req, file, callback) => {
+  //function to control which files are accepted
+  if (
+    file.mimetype == "image/jpeg" ||
+    file.mimetype == "image/png" ||
+    "application/pdf"
+  ) {
+    //mimetype of the file
+    callback(null, true);
+  } else {
+    callback(null, false);
+  }
+};
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+module.exports = upload;

@@ -13,14 +13,14 @@ module.exports = {
                 res.status(422).json({
                     success: false,
                     message: 'category exist'
-                  
+
                 })
-               
+
             } else {
 
                 const data = {
                     nomCat: req.body.nomCat,
-                   
+
                 }
 
 
@@ -29,7 +29,7 @@ module.exports = {
                         res.status(500).json({
                             success: false,
                             message: "error create category",
-                            
+
                         })
                     } else {
                         res.status(201).json({
@@ -64,9 +64,9 @@ module.exports = {
         })
     },
 
-    
+
     getByIdcategory: function (req, res) {
-        categoryModel.findById({_id:req.params.id}).populate( 'qcm' ) .exec((err, data)=>  {
+        categoryModel.findById({ _id: req.params.id }).populate('qcm').exec((err, data) => {
             if (err)
                 res.status(500).json
                     ({
@@ -100,14 +100,14 @@ module.exports = {
                     success: true,
                     data: cat
                 })
-                
+
             }
         })
     },
 
     updatecategory: (req, res) => {
-
-        categoryModel.findByIdAndUpdate({ _id: req.params.id }, req.body , { new: true } , (err, cat) => {
+        console.log(req.body);
+        categoryModel.findByIdAndUpdate({ _id: req.params.id }, { nomCat: req.body.nomCat }, { new: true }, (err, cat) => {
             if (err) {
 
                 res.status(500).json({
@@ -119,6 +119,7 @@ module.exports = {
 
 
             } else {
+
                 res.status(200).json({
                     success: true,
                     messge: "category updated successfuly",

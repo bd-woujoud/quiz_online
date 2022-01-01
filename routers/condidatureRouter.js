@@ -1,17 +1,17 @@
 
-const condidatureController =require('../controllers/condidatureController');
-const express=require('express');
+const condidatureController = require('../controllers/condidatureController');
+const express = require('express');
 const upload = require('../middleware/upload')
-const route= express.Router();
+const route = express.Router();
 
 
 
-route.post('/add',upload.single('pdf'),condidatureController.createcondidature)
-route.get('/getall',condidatureController.getallcondidature)
-route.get('/getbyid/:id',condidatureController.getByIdcondidature)
-route.delete('/deletebyid/:id',condidatureController.deletecondidature)
-route.put('/updatebyid/:id',condidatureController.updatecondidature)
+route.post('/', upload.single('pdf'), condidatureController.createcondidature)
+route.get('/', condidatureController.getallcondidature)
+route.get('/getbyid/:id', condidatureController.getByIdcondidature)
+route.delete('/deletebyid/:id', condidatureController.deletecondidature)
+route.put('/updatebyid/:id', condidatureController.updatecondidature)
 
 
 
-module.exports=route;
+module.exports = route;

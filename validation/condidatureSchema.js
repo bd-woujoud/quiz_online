@@ -27,9 +27,11 @@ const validatecondidature = data => {
             .pattern(/^[0-9]+$/)
             .required(),
 
-        cv: joi
+        
+
+
+        offre: joi
             .string()
-           
 
 
     })

@@ -1,9 +1,10 @@
 
 const jwt = require('jsonwebtoken')//methode de creation de jwt
 
-const SignToken = (uid) => {
+const SignToken = (uid , role) => {
     return jwt.sign({
-        id: uid
+        id: uid,
+        role  : role ,
     }, process.env.JWT_SECRET, { expiresIn: '1h' });// sauvegarde de cle secret jwt_secret dans le dossier dotenv
 }
 

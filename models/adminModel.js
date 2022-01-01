@@ -7,14 +7,15 @@ const adminSchema = new Schema({
     email: {
 
         type: String,
-      
+
     },
 
     password: {
 
         type: String,
 
-    }
+    },
+    role: String
 
 });
 

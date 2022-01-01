@@ -26,14 +26,14 @@ email:{
 phone:{
 
     type:Number,
-   
+
 },
 
 cv:{
 
     type:String,
-    unique:true
-
+   
+   
 },
 
 offre:{
@@ -41,10 +41,16 @@ offre:{
     ref:'offre'
 },
 
-test:{ //id de test saret fih creation  yet3aba ba3ed mayefctilo test
+test:{ 
 
     type:mongoose.Schema.Types.ObjectId,
     ref:'test'
+},
+
+categorie:{ 
+
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'categorie'
 }
 
 },

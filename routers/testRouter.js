@@ -1,14 +1,15 @@
-const testController =require('../controllers/testController');
-const express=require('express');
+const testController = require('../controllers/testController');
+const qcmController = require('../controllers/qcmController')
 
-const route= express.Router();
+const express = require('express');
+const adminController = require('../controllers/adminController');
 
-route.post('/add',testController.createtest)
-route.get('/getall',testController.getalltest)
-route.get('/getbyid/:id',testController.gettestById)
-route.delete('/deletebyid/:id',testController.deletetest)
-route.put('/updatebyid/:id',testController.updatetest)
+const route = express.Router();
 
+route.post('/', testController.createtest, adminController.sendMail)
+route.get('/getall', testController.getalltest)
+route.get('/getbyid/:id', testController.gettestById)
+route.delete('/deletebyid/:id', testController.deletetest)
+route.put('/updatebyid/:id', testController.updatetest)
 
-
-module.exports=route;
+module.exports = route;

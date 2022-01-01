@@ -6,25 +6,25 @@ const { validatecondidature } = require("../validation/condidatureSchema")
 
 module.exports = {
 
-    createcondidature:async(req,res)=>{
+    createcondidature: async (req, res) => {
 
 
-//validation data
-        
-      
-const { error } = validatecondidature(req.body)
+        //validation data
 
-if (error)
-    return res.status(422).json({
-        message: 'user data validation error',
-        success: false,
-        errors: error
-    })
 
-        let cvv =req.file
-        if(cvv.mimetype !=='application/pdf'){
+        const { error } = validatecondidature(req.body)
 
-          res.json({msg:'please enter a valid extention'})
+        if (error)
+            return res.status(422).json({
+                message: 'user data validation error',
+                success: false,
+                errors: error
+            })
+
+        let cvv = req.file
+        if (cvv.mimetype !== 'application/pdf') {
+
+            res.json({ msg: 'please enter a valid extention' })
 
         }
 
@@ -37,7 +37,7 @@ if (error)
 
         const { email } = req.body
 
-      
+
         const user = await condidatureModel.findOne({ email: email })
 
         if (user)
@@ -46,7 +46,7 @@ if (error)
                 errors: {
                     details: [
                         {
-                            
+
                             "path": [
                                 "email"
                             ]
@@ -54,33 +54,34 @@ if (error)
                     ]
                 }
             })
-        
 
-        else{
 
-          condidatureModel.create({
-            
-            name:req.body.name,
-            lastname:req.body.lastname,
-            phone:req.body.phone,
-            email:req.body.email,
-            cv:cvv.filename,
+        else {
 
-          },function(err,candidature){
-              if (err) {
-                  res.json({message:'error add condidature'+"  " +err,data:null,status:500})
-              } else {
-                  res.json({message:'condidature created successfully',data:candidature,status:200})
-              }
-          })
+            condidatureModel.create({
+
+                name: req.body.name,
+                lastname: req.body.lastname,
+                phone: req.body.phone,
+                email: req.body.email,
+                cv: cvv.filename,
+                offre: req.body.offre
+
+            }, function (err, candidature) {
+                if (err) {
+                    res.json({ message: 'error add condidature' + "  " + err, data: null, status: 500 })
+                } else {
+                    res.json({ message: 'condidature created successfully', data: candidature, status: 200 })
+                }
+            })
         }
 
-    
+
     },
 
 
     getallcondidature: function (req, res) {
-        condidatureModel.find({}).populate('offre').populate('test').exec((err, data) => {
+        condidatureModel.find({}).populate('offre').populate('test').populate('categorie').exec((err, data) => {
             if (err)
                 res.status(500).json
                     ({
@@ -137,8 +138,8 @@ if (error)
         })
     },
 
-    updatecondidature : (req, res) => {
-        
+    updatecondidature: (req, res) => {
+
         condidatureModel.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, condidature) => {
             if (err) {
                 res.status(500).json({
